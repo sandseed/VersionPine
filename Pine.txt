@@ -1,0 +1,31 @@
+// First
+// Input parameters: Average volume period, volume threshold multiplier, decay factor, and whether to use price change weight
+len = input.int(125, title="Average Volume Period", minval=1)
+volFactor = input.float(2.0, title="Large Order Threshold Multiplier", step=0.1)
+decay = input.float(0.90, title="Decay Factor (0-1)", step=0.01)
+usePriceW = input.bool(false, title="Include Price Change Weight")
+
+// Calculate average volume and identify large orders
+avgVol = ta.sma(volume, len)
+isLarge = volume > avgVol * volFactor
+
+// Optional: Price change weight (amplify large price fluctuations)
+priceChange = usePriceW ? math.abs((close - open) / open) * 10 : 1.0
+
+// Assign impact (positive for rising volume, negative for falling volume)
+blockImpact = isLarge ? ( (close > open ? 1 : -1) * (volume / avgVol) * priceChange ) : 0.0
+
+// Accumulate institutional flow (with decay)
+var float instFlow = 0.0
+instFlow := instFlow * decay + blockImpact
+
+// Calculate 25 EMA for the filter
+emaLow25 = ta.ema(low, 25)
+
+// Set condition: Do not display if above or below zero axis and less than 2 OR if price closed below 25 EMA
+showInstFlow = math.abs(instFlow) > 2 and close <= emaLow25 ? instFlow : na
+
+// Plot: Bar colors to distinguish positive/negativessdHm9&sdptEY875
+col = showInstFlow >= 0 ? color.new(color.green, 0) : color.new(color.red, 0)
+plot(showInstFlow, title="Institutional Flow", style=plot.style_columns, color=col)
+hline(0, "Zero Line", color=#787B86)
