@@ -29,3 +29,44 @@ showInstFlow = math.abs(instFlow) > 2 and close <= emaLow25 ? instFlow : na
 col = showInstFlow >= 0 ? color.new(color.green, 0) : color.new(color.red, 0)
 plot(showInstFlow, title="Institutional Flow", style=plot.style_columns, color=col)
 hline(0, "Zero Line", color=#787B86)
+
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "UUID填这里"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "dest": "www.cloudflare.com:443",
+          "xver": 0,
+          "serverNames": [
+            "www.cloudflare.com"
+          ],
+          "privateKey": "私钥填这里",
+          "shortIds": [
+            "shortID填这里"
+          ]
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom"
+    }
+  ]
+}
