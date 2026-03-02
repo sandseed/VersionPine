@@ -31,13 +31,18 @@ plot(showInstFlow, title="Institutional Flow", style=plot.style_columns, color=c
 hline(0, "Zero Line", color=#787B86)
 
 {
+  "log": {
+    "loglevel": "warning"
+  },
   "inbounds": [
     {
       "port": 5000,
       "protocol": "vless",
       "settings": {
         "clients": [
-          { "id": "你的UUID" }
+          {
+            "id": "你的UUID"   // 必填，格式 8-4-4-4-12
+          }
         ],
         "decryption": "none"
       },
@@ -45,13 +50,18 @@ hline(0, "Zero Line", color=#787B86)
         "network": "tcp",
         "security": "reality",
         "realitySettings": {
-          "dest": "www.cloudflare.com:443",
-          "serverNames": ["www.cloudflare.com"],
-          "privateKey": "你的PrivateKey",
-          "shortIds": ["你的ShortID"]
+          "dest": "www.cloudflare.com:443",      // 必填
+          "serverNames": ["www.cloudflare.com"], // 必填，数组
+          "privateKey": "你的PrivateKey",        // 必填 X25519 私钥 32 字节
+          "shortIds": ["你的ShortID"]            // 必填数组，可多个 hex 字符串
         }
       }
     }
   ],
-  "outbounds": [{ "protocol": "freedom" }]
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
 }
